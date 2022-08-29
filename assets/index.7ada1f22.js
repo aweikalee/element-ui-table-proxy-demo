@@ -58686,7 +58686,8 @@ function list() {
 }
 const _sfc_main = defineComponent({
   components: {
-    MyTable: __unplugin_components_0
+    MyTable: __unplugin_components_0,
+    MyToolbar: __unplugin_components_6
   },
   data() {
     return {
