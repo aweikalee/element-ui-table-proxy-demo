@@ -58574,10 +58574,9 @@ const _sfc_main$1 = defineComponent({
     }
   },
   mounted() {
-    var _a, _b, _c;
-    (_b = (_a = this.toolbar) == null ? void 0 : _a.updateTableRef) == null ? void 0 : _b.call(_a, this);
+    var _a;
     const { setElement } = useKeepScroll(this);
-    setElement((_c = this.$refs.table) == null ? void 0 : _c.$refs.bodyWrapper);
+    setElement((_a = this.$refs.table) == null ? void 0 : _a.$refs.bodyWrapper);
   },
   activated() {
     var _a, _b;
