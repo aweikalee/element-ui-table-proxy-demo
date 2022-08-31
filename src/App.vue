@@ -7,7 +7,7 @@
         ref="table"
         max-height="400"
         :style="{ maxWidth: '500px' }"
-        :toolbar="$refs.toolbar"
+        :columns.sync="columns"
       >
         <el-table-column prop="id" label="ID" min-width="50" />
 
@@ -25,7 +25,7 @@
       </MyTable>
     </keep-alive>
 
-    <MyToolbar ref="toolbar" :table="$refs.table" />
+    <MyToolbar :columns.sync="columns" />
     <el-button @click="show = !show">显隐（KeepAlive）</el-button>
   </div>
 </template>
@@ -34,7 +34,7 @@
 import { defineComponent } from "vue"
 import * as api from "./api"
 
-import MyTable from "./components/MyTable.vue"
+import MyTable, { IMyTableColumnProps } from "./components/MyTable.vue"
 import MyToolbar from "./components/MyToolbar.vue"
 
 export default defineComponent({
@@ -47,7 +47,7 @@ export default defineComponent({
     return {
       show: true,
       data: [],
-      columns: [],
+      columns: [] as IMyTableColumnProps[],
     }
   },
 

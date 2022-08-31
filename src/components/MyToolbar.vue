@@ -5,10 +5,10 @@
     <template #dropdown>
       <el-dropdown-menu>
         <div class="my-table-toolbar">
-          <VueDraggable v-model="columns" item-key="prop">
+          <VueDraggable v-model="proxyColumns" item-key="prop">
             <div
               class="my-table-toolbar__item"
-              v-for="(element, index) in columns"
+              v-for="(element, index) in proxyColumns"
             >
               <el-checkbox
                 :value="element.visiable"
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, PropType } from "vue"
 import VueDraggable from "vuedraggable"
 import { IMyTableColumnProps } from "./MyTable.vue"
 
@@ -47,31 +47,16 @@ export default defineComponent({
   },
 
   props: {
-    table: Object,
-  },
-
-  data() {
-    return {
-      tableRef: null,
-    }
-  },
-
-  watch: {
-    table: {
-      handler(value) {
-        this.tableRef = value
-      },
-      immediate: true,
-    },
+    columns: Array as PropType<IMyTableColumnProps[]>,
   },
 
   computed: {
-    columns: {
+    proxyColumns: {
       get(): IMyTableColumnProps[] {
-        return this.tableRef?.columns ?? []
+        return this.columns ?? []
       },
       set(value: IMyTableColumnProps[]) {
-        this.tableRef?.updateColumns(value)
+        this.$emit("update:columns", value)
       },
     },
   },
@@ -79,10 +64,10 @@ export default defineComponent({
   methods: {
     toggleVisiable(data: IMyTableColumnProps, index: number) {
       const newData = { ...data }
-      const _columns = this.columns.slice()
+      const _columns = this.proxyColumns.slice()
       newData.visiable = !newData.visiable
       _columns[index] = newData
-      this.tableRef?.updateColumns(_columns)
+      this.proxyColumns = _columns
     },
 
     setFixed(
@@ -91,7 +76,7 @@ export default defineComponent({
       value: "left" | "right"
     ) {
       const newData = { ...data }
-      const _columns = this.columns.slice()
+      const _columns = this.proxyColumns.slice()
       const oldFixed = newData.fixed
       if (oldFixed) {
         if (oldFixed === value) {
@@ -103,11 +88,7 @@ export default defineComponent({
         newData.fixed = value
       }
       _columns[index] = newData
-      this.tableRef?.updateColumns(_columns)
-    },
-
-    updateTableRef(value) {
-      this.tableRef = value
+      this.proxyColumns = _columns
     },
   },
 })

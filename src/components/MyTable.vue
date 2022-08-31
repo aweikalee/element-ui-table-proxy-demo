@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, PropType } from "vue"
 import Table from "element-ui/lib/table"
 import TableColumn from "element-ui/lib/table-column"
 import "element-ui/lib/theme-chalk/table.css"
@@ -47,13 +47,14 @@ export default defineComponent({
   inheritAttrs: false,
 
   props: {
-    toolbar: Object,
+    columns: Array as PropType<IMyTableColumnProps[]>,
   },
 
   data() {
     return {
       key: 0,
 
+      columnsRender: [] as IMyTableColumnProps[],
       columnsFromSlot: [] as IMyTableColumnProps[],
       columnsFromStorage: (storage.get("columns") ??
         []) as IMyTableColumnProps[],
@@ -61,7 +62,21 @@ export default defineComponent({
   },
 
   computed: {
-    columns() {
+    watchColumns() {
+      return [this.columnsFromSlot, this.columnsFromStorage]
+    },
+  },
+
+  watch: {
+    columnsRender() {
+      this.key += 1
+    },
+    columns(value) {
+      if (value === this.columnsRender) return
+      this.columnsFromStorage = value
+      storage.set("columns", value)
+    },
+    watchColumns() {
       const slot = [...this.columnsFromSlot]
       const storage = [...this.columnsFromStorage]
 
@@ -87,15 +102,11 @@ export default defineComponent({
       })
 
       // 将 fixed 移到最前
-      return res.sort((a, b) => {
+      this.columnsRender = res.sort((a, b) => {
         return (a.fixed ? -1 : 1) - (b.fixed ? -1 : 1)
       })
-    },
-  },
 
-  watch: {
-    columns() {
-      this.key += 1
+      this.$emit("update:columns", this.columnsRender)
     },
   },
 
@@ -105,16 +116,9 @@ export default defineComponent({
     setElement(this.$refs.table?.$refs.bodyWrapper)
   },
 
-  activated() {
-    /* 保持与 toolbar 的联系 */
-    this.toolbar?.updateTableRef?.(this)
-  },
-
-  methods: {
-    updateColumns(value: IMyTableColumnProps[]) {
-      this.columnsFromStorage = value
-      storage.set("columns", value)
-    },
+  destroyed() {
+    /* 当前组件销毁 清空 columns */
+    this.$emit("update:columns", [])
   },
 
   render(h) {
@@ -148,7 +152,7 @@ export default defineComponent({
 
       /* 对 slot.main 进行改写 */
       const refactorySlot: any[] = []
-      this.columns.forEach(({ prop, visiable, fixed }) => {
+      this.columnsRender.forEach(({ prop, visiable, fixed }) => {
         if (!visiable) return
 
         let vnode: any = main.find((_, index) => prop === columnsProp[index])
