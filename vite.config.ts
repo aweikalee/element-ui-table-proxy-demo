@@ -1,12 +1,12 @@
-import { defineConfig } from "vite"
-import vue from "@vitejs/plugin-vue2"
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue2'
 
-import Components from "unplugin-vue-components/vite"
-import { ElementUiResolver } from "unplugin-vue-components/resolvers"
+import Components from 'unplugin-vue-components/vite'
+import { ElementUiResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "./",
+  base: './',
   plugins: [
     vue(),
     Components({

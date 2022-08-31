@@ -1,4 +1,4 @@
-import Vue from "vue"
+import Vue from 'vue'
 
 export function useKeepScroll(instance: Vue) {
   let scrollTop = 0
@@ -20,7 +20,7 @@ export function useKeepScroll(instance: Vue) {
 
   let listenedEl: HTMLElement | null = null
   function removeEventListener() {
-    listenedEl?.removeEventListener("scroll", save)
+    listenedEl?.removeEventListener('scroll', save)
     listenedEl = null
   }
   function addEventListener() {
@@ -29,13 +29,13 @@ export function useKeepScroll(instance: Vue) {
     removeEventListener()
 
     listenedEl = el
-    listenedEl?.addEventListener("scroll", save)
+    listenedEl?.addEventListener('scroll', save)
   }
 
-  instance.$on("hook:activated", addEventListener)
-  instance.$on("hook:deactivated", removeEventListener)
+  instance.$on('hook:activated', addEventListener)
+  instance.$on('hook:deactivated', removeEventListener)
 
-  instance.$on("hook:activated", restore)
+  instance.$on('hook:activated', restore)
 
   return {
     setElement(value: HTMLElement) {

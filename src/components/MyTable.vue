@@ -1,17 +1,17 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue"
-import Table from "element-ui/lib/table"
-import TableColumn from "element-ui/lib/table-column"
-import "element-ui/lib/theme-chalk/table.css"
+import { defineComponent, PropType } from 'vue'
+import Table from 'element-ui/lib/table'
+import TableColumn from 'element-ui/lib/table-column'
+import 'element-ui/lib/theme-chalk/table.css'
 
-import { cloneVNode } from "./vnode"
-import * as storage from "./storage"
-import { useKeepScroll } from "./useKeepScroll"
+import { cloneVNode } from './vnode'
+import * as storage from './storage'
+import { useKeepScroll } from './useKeepScroll'
 
 export interface IMyTableColumnProps {
   prop?: string
   label?: string
-  fixed?: "left" | "right" | boolean
+  fixed?: 'left' | 'right' | boolean
   visiable?: boolean
 }
 
@@ -43,7 +43,7 @@ function isSameColumns(a: IMyTableColumnProps[], b: IMyTableColumnProps[]) {
 }
 
 export default defineComponent({
-  name: "MyTable",
+  name: 'MyTable',
   inheritAttrs: false,
 
   props: {
@@ -56,7 +56,7 @@ export default defineComponent({
 
       columnsRender: [] as IMyTableColumnProps[],
       columnsFromSlot: [] as IMyTableColumnProps[],
-      columnsFromStorage: (storage.get("columns") ??
+      columnsFromStorage: (storage.get('columns') ??
         []) as IMyTableColumnProps[],
     }
   },
@@ -74,7 +74,7 @@ export default defineComponent({
     columns(value) {
       if (value === this.columnsRender) return
       this.columnsFromStorage = value
-      storage.set("columns", value)
+      storage.set('columns', value)
     },
     watchColumns() {
       const slot = [...this.columnsFromSlot]
@@ -106,7 +106,7 @@ export default defineComponent({
         return (a.fixed ? -1 : 1) - (b.fixed ? -1 : 1)
       })
 
-      this.$emit("update:columns", this.columnsRender)
+      this.$emit('update:columns', this.columnsRender)
     },
   },
 
@@ -118,7 +118,7 @@ export default defineComponent({
 
   destroyed() {
     /* 当前组件销毁 清空 columns */
-    this.$emit("update:columns", [])
+    this.$emit('update:columns', [])
   },
 
   render(h) {
@@ -133,7 +133,7 @@ export default defineComponent({
       if (isElTableColumn(vnode)) {
         const { prop, fixed } = getColumnData(vnode)
         if (prop !== undefined) return slots.main.push(vnode)
-        if (fixed === "left") return slots.left.push(vnode)
+        if (fixed === 'left') return slots.left.push(vnode)
       }
       slots.other.push(vnode)
     })
@@ -180,7 +180,7 @@ export default defineComponent({
     return h(
       Table,
       {
-        ref: "table",
+        ref: 'table',
         attrs: {
           ...this.$attrs,
           key: this.key,

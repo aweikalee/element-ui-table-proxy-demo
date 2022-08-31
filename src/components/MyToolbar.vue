@@ -37,9 +37,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue"
-import VueDraggable from "vuedraggable"
-import { IMyTableColumnProps } from "./MyTable.vue"
+import { defineComponent, PropType } from 'vue'
+import VueDraggable from 'vuedraggable'
+import { IMyTableColumnProps } from './MyTable.vue'
 
 export default defineComponent({
   components: {
@@ -56,7 +56,7 @@ export default defineComponent({
         return this.columns ?? []
       },
       set(value: IMyTableColumnProps[]) {
-        this.$emit("update:columns", value)
+        this.$emit('update:columns', value)
       },
     },
   },
@@ -73,7 +73,7 @@ export default defineComponent({
     setFixed(
       data: IMyTableColumnProps,
       index: number,
-      value: "left" | "right"
+      value: 'left' | 'right'
     ) {
       const newData = { ...data }
       const _columns = this.proxyColumns.slice()
@@ -82,7 +82,7 @@ export default defineComponent({
         if (oldFixed === value) {
           newData.fixed = false
         } else {
-          newData.fixed = oldFixed === "left" ? "right" : "left"
+          newData.fixed = oldFixed === 'left' ? 'right' : 'left'
         }
       } else {
         newData.fixed = value
