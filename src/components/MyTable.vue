@@ -179,19 +179,10 @@ export default defineComponent({
         ref: "table",
         attrs: {
           ...this.$attrs,
+          key: this.key,
         },
       },
-      [
-        h(
-          "template",
-          {
-            attrs: {
-              key: this.key,
-            },
-          },
-          [slots.left as any, refactorySlot(), slots.other as any]
-        ),
-      ]
+      [slots.left as any, refactorySlot(), slots.other as any]
     )
   },
 })
