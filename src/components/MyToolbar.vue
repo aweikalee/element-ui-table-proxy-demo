@@ -99,7 +99,7 @@ export default defineComponent({
   &__item {
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding: 5px 10px;
     :deep(.el-checkbox) {
       margin-right: 10px;
     }
