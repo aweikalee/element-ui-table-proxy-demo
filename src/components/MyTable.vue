@@ -92,19 +92,7 @@ export default defineComponent({
           slot.splice(index, 1)
         }
       })
-      res = slot.concat(res)
-
-      // fixed 时 visiable 修正为 true
-      res.forEach((child) => {
-        if (child.fixed && !child.visiable) {
-          child.visiable = true
-        }
-      })
-
-      // 将 fixed 移到最前
-      this.columnsRender = res.sort((a, b) => {
-        return (a.fixed ? -1 : 1) - (b.fixed ? -1 : 1)
-      })
+      this.columnsRender = slot.concat(res)
 
       this.$emit('update:columns', this.columnsRender)
     },
