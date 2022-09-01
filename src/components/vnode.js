@@ -1,49 +1,20 @@
 /**
  * VNode 和 cloneVNode 是 Vue 内置类和方法
  * 但是 Vue2 并没有暴露他们
- * 这边直接复制源码即可
+ * 这边通过 Vue 实例，创建一个 VNode，从原型上获取 VNode
+ * 再从源码中复制一份 cloneVNode
  */
+import Vue from 'vue'
 
-export default class VNode {
-  constructor(
-    tag,
-    data,
-    children,
-    text,
-    elm,
-    context,
-    componentOptions,
-    asyncFactory
-  ) {
-    this.tag = tag
-    this.data = data
-    this.children = children
-    this.text = text
-    this.elm = elm
-    this.ns = undefined
-    this.context = context
-    this.fnContext = undefined
-    this.fnOptions = undefined
-    this.fnScopeId = undefined
-    this.key = data && data.key
-    this.componentOptions = componentOptions
-    this.componentInstance = undefined
-    this.parent = undefined
-    this.raw = false
-    this.isStatic = false
-    this.isRootInsert = true
-    this.isComment = false
-    this.isCloned = false
-    this.isOnce = false
-    this.asyncFactory = asyncFactory
-    this.asyncMeta = undefined
-    this.isAsyncPlaceholder = false
-  }
-
-  get child() {
-    return this.componentInstance
-  }
-}
+let VNode
+new Vue({
+  el: document.createElement('div'),
+  render(h) {
+    const vnode = h('div')
+    VNode = Object.getPrototypeOf(vnode).constructor
+    this.$destroy()
+  },
+})
 
 export function cloneVNode(vnode) {
   const cloned = new VNode(
