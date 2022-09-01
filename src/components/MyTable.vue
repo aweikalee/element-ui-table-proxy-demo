@@ -112,6 +112,16 @@ export default defineComponent({
     // 记录滚动条位置
     const { setElement } = useKeepScroll(this)
     setElement(this.$refs.table?.$refs.bodyWrapper)
+
+    // 解决 KeepAlive 恢复时布局错位
+    let firstActivated = true
+    this.$on('hook:activated', () => {
+      if (firstActivated) {
+        firstActivated = false
+        return
+      }
+      this.$refs.table?.doLayout()
+    })
   },
 
   destroyed() {
