@@ -52,12 +52,17 @@ export default defineComponent({
 
   data() {
     return {
+      /* 强制更新 el-table */
       key: 0,
 
-      columnsRender: [] as IMyTableColumnProps[],
+      /* 列的排序与部分属性 */
+      // slots 中获取的
       columnsFromSlot: [] as IMyTableColumnProps[],
+      // 本地储存的
       columnsFromStorage: (storage.get('columns') ??
         []) as IMyTableColumnProps[],
+      // 渲染用的
+      columnsRender: [] as IMyTableColumnProps[],
     }
   },
 
@@ -76,6 +81,9 @@ export default defineComponent({
       this.columnsFromStorage = value
       storage.set('columns', value)
     },
+
+    // 当 columnsFromSlot 或 columnsFromStorage 有变更
+    // 重新生成 columnsRender
     watchColumns() {
       const slot = [...this.columnsFromSlot]
       const storage = [...this.columnsFromStorage]
@@ -86,10 +94,11 @@ export default defineComponent({
         if (~index) {
           const propsFromSlot = slot[index]
           res.push({
-            ...propsFromSlot,
+            ...propsFromSlot, // 可能新增属性 所以用 slot 的数据打个底
             ...props,
           })
-          slot.splice(index, 1)
+          slot.splice(index, 1) // storage 里不存在的列
+          // slot 中没有找到的 则会被过滤掉
         }
       })
       this.columnsRender = slot.concat(res)
@@ -99,7 +108,8 @@ export default defineComponent({
   },
 
   mounted() {
-    /* 记录滚动条位置  */
+    /* 追加功能 */
+    // 记录滚动条位置
     const { setElement } = useKeepScroll(this)
     setElement(this.$refs.table?.$refs.bodyWrapper)
   },
@@ -112,9 +122,9 @@ export default defineComponent({
   render(h) {
     /* 对 slot 进行分类 */
     const slots = {
-      left: [] as TableColumn[],
-      main: [] as TableColumn[],
-      other: [] as TableColumn[],
+      left: [] as TableColumn[], // ElTableColumn 且存在 prop 属性
+      main: [] as TableColumn[], // ElTableColumn 不存在 prop 属性，但 fixed="left"
+      other: [] as TableColumn[], // 其他
     }
 
     this.$slots.default?.forEach((vnode: any) => {
@@ -130,6 +140,7 @@ export default defineComponent({
     const columnsFromSlot = slots.main.map((vnode) => getColumnData(vnode))
     const isSame = isSameColumns(this.columnsFromSlot, columnsFromSlot)
     if (!isSame) {
+      // 赋值会使 render 重新执行
       this.columnsFromSlot = columnsFromSlot
     }
 
